@@ -79,3 +79,21 @@ jobs:
           curl --fail-with-body -L "$VIDEO_URL" -o background.mp4
 
           echo "Pixabay background video downloaded successfully"
+      - name: Create vertical YouTube Short
+        run: |
+          set -e
+
+          ffmpeg -y \
+            -stream_loop -1 -i background.mp4 \
+            -i motivational-voice.mp3 \
+            -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,subtitles=motivational-voice.vtt" \
+            -t 30 \
+            -c:v libx264 -preset veryfast \
+            -c:a aac \
+            -shortest \
+            motivational-short.mp4
+      - name: Save finished YouTube Short
+        uses: actions/upload-artifact@v4
+        with:
+          name: finished-youtube-short
+          path: motivational-short.mp4
