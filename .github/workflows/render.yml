@@ -97,10 +97,11 @@ jobs:
       - name: Create vertical YouTube Short
         run: |
           set -e
-
           ffmpeg -y \
             -stream_loop -1 -i background.mp4 \
             -i motivational-voice.mp3 \
+            -map 0:v:0 \
+            -map 1:a:0 \
             -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,subtitles=motivational-voice.vtt" \
             -t 30 \
             -c:v libx264 -preset veryfast \
