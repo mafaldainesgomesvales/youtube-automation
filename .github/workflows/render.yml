@@ -58,3 +58,23 @@ jobs:
       - name: Check video tools
         run: |
           ffmpeg -version | head -n 1
+        - name: Download background video from Pixabay
+          env:
+            PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          run: |
+            set -e
+
+            curl --fail-with-body -sS \
+              "https://pixabay.com/api/videos/?key=$PIXABAY_API_KEY&q=nature%20sunrise&per_page=5" \
+              -o pixabay.json
+
+            VIDEO_URL=$(jq -r '.hits[0].videos.medium.url' pixabay.json)
+
+            if [ "$VIDEO_URL" = "null" ] || [ -z "$VIDEO_URL" ]; then
+              echo "No Pixabay video found"
+              exit 1
+            fi
+
+            curl --fail-with-body -L "$VIDEO_URL" -o background.mp4
+
+            echo "Pixabay background video downloaded successfully"
