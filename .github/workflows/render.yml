@@ -1,0 +1,13 @@
+name: Create YouTube Video
+
+on:
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test video automation
+        run: |
+          echo "Your video automation is ready!"
+          ffmpeg -version
