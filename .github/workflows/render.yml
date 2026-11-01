@@ -32,3 +32,5 @@ jobs:
 
           echo "GEMINI GENERATED YOUR SCRIPT:"
           jq -r '.candidates[0].content.parts[].text' result.json
+      - name: Install Edge TTS
+        run: pip install edge-tts
