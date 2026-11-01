@@ -7,6 +7,11 @@ jobs:
   render:
     runs-on: ubuntu-latest
     steps:
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
       - name: Test video automation
         run: |
           echo "Your video automation is ready!"
