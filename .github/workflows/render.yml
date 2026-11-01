@@ -9,7 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install tools
-        run: sudo apt-get update && sudo apt-get install -y curl jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq ffmpeg
+          pip install edge-tts
 
       - name: Ask Gemini to write a Short
         env:
@@ -25,25 +28,31 @@ jobs:
             -d '{
               "contents": [{
                 "parts": [{
-                  "text": "Write a short, exciting 30-second YouTube Shorts script about 3 amazing facts about space. Include a catchy opening and a closing sentence."
+                  "text": "Write a short, exciting 30-second motivational YouTube Shorts script. Make it inspiring, emotional and original. Return only the spoken script."
                 }]
               }]
             }' > result.json
 
-          echo "GEMINI GENERATED YOUR SCRIPT:"
-          jq -r '.candidates[0].content.parts[].text' result.json
+          jq -r '.candidates[0].content.parts[].text' result.json > script.txt
 
-      - name: Install Edge TTS
-        run: pip install edge-tts
+          echo "GENERATED SCRIPT:"
+          cat script.txt
 
-      - name: Create male voice sample
+      - name: Create male voice
         run: |
-          edge-tts --voice en-US-ChristopherNeural \
-            --text "Believe in yourself. Every small step brings you closer to your dreams. Never give up." \
+          edge-tts \
+            --voice en-US-ChristopherNeural \
+            --file script.txt \
             --write-media motivational-voice.mp3
 
       - name: Save voice sample
         uses: actions/upload-artifact@v4
         with:
           name: motivational-voice
-          path: motivational-voice.mp3
+          path: |
+            motivational-voice.mp3
+            script.txt
+
+      - name: Check video tools
+        run: |
+          ffmpeg -version | head -n 1
