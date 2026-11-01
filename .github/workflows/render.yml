@@ -36,7 +36,7 @@ jobs:
         run: pip install edge-tts
       - name: Create male voice sample
         run: |
-          edge-tts --voice en-US-GuyNeural \
+        edge-tts --voice en-US-ChristopherNeural \
             --text "Believe in yourself. Every small step brings you closer to your dreams. Never give up." \
             --write-media motivational-voice.mp3
 
