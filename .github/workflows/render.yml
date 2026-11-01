@@ -1,5 +1,5 @@
 
-name: Test Gemini AI
+name: Create YouTube Video
 
 on:
   workflow_dispatch:
