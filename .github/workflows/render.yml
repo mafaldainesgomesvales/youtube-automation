@@ -32,11 +32,13 @@ jobs:
 
           echo "GEMINI GENERATED YOUR SCRIPT:"
           jq -r '.candidates[0].content.parts[].text' result.json
+
       - name: Install Edge TTS
         run: pip install edge-tts
+
       - name: Create male voice sample
         run: |
-        edge-tts --voice en-US-ChristopherNeural \
+          edge-tts --voice en-US-ChristopherNeural \
             --text "Believe in yourself. Every small step brings you closer to your dreams. Never give up." \
             --write-media motivational-voice.mp3
 
