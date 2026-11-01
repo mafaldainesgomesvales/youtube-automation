@@ -38,7 +38,7 @@ jobs:
           echo "GENERATED SCRIPT:"
           cat script.txt
 
-            - name: Create male voice
+      - name: Create male voice
         run: |
           edge-tts \
             --voice en-US-ChristopherNeural \
@@ -46,12 +46,13 @@ jobs:
             --write-media motivational-voice.mp3 \
             --write-subtitles motivational-voice.vtt
 
-      - name: Save voice sample
+      - name: Save voice and subtitles
         uses: actions/upload-artifact@v4
         with:
           name: motivational-voice
           path: |
             motivational-voice.mp3
+            motivational-voice.vtt
             script.txt
 
       - name: Check video tools
