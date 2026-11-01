@@ -1,0 +1,28 @@
+
+name: Test Pixabay Videos
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Search motivational videos
+        env:
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: |
+          curl -fsS --get "https://pixabay.com/api/videos/" \
+            --data-urlencode "key=$PIXABAY_API_KEY" \
+            --data-urlencode "q=motivational sunrise" \
+            --data-urlencode "per_page=3" \
+            -o videos.json
+
+          echo "Videos found:"
+          jq '.totalHits' videos.json
+
+          echo "Video results:"
+          jq -r '.hits[] | .pageURL' videos.json
