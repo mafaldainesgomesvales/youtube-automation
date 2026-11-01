@@ -1,8 +1,9 @@
-
 name: Create YouTube Video
 
 on:
   workflow_dispatch:
+  schedule:
+        - cron: '0 19 * * *'
 
 jobs:
   test-gemini:
