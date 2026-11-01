@@ -7,6 +7,7 @@ on:
 jobs:
   test-gemini:
     runs-on: ubuntu-latest
+
     steps:
       - name: Install tools
         run: |
@@ -20,18 +21,31 @@ jobs:
         run: |
           set -e
 
-          curl --fail-with-body -sS \
-            -X POST \
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent" \
-            -H "Content-Type: application/json" \
-            -H "x-goog-api-key: $GEMINI_API_KEY" \
-            -d '{
-              "contents": [{
-                "parts": [{
-                  "text": "Write a short, exciting 30-second motivational YouTube Shorts script. Make it inspiring, emotional and original. Return only the spoken script."
+          for attempt in 1 2 3; do
+            echo "Gemini attempt $attempt..."
+
+            if curl --fail-with-body -sS \
+              -X POST \
+              "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent" \
+              -H "Content-Type: application/json" \
+              -H "x-goog-api-key: $GEMINI_API_KEY" \
+              -d '{
+                "contents": [{
+                  "parts": [{
+                    "text": "Write a short, exciting 30-second motivational YouTube Shorts script. Make it inspiring, emotional and original. Return only the spoken script."
+                  }]
                 }]
-              }]
-            }' > result.json
+              }' > result.json; then
+              break
+            fi
+
+            if [ "$attempt" -eq 3 ]; then
+              echo "Gemini failed after 3 attempts."
+              exit 1
+            fi
+
+            sleep 20
+          done
 
           jq -r '.candidates[0].content.parts[].text' result.json > script.txt
 
@@ -79,6 +93,7 @@ jobs:
           curl --fail-with-body -L "$VIDEO_URL" -o background.mp4
 
           echo "Pixabay background video downloaded successfully"
+
       - name: Create vertical YouTube Short
         run: |
           set -e
@@ -92,6 +107,7 @@ jobs:
             -c:a aac \
             -shortest \
             motivational-short.mp4
+
       - name: Save finished YouTube Short
         uses: actions/upload-artifact@v4
         with:
