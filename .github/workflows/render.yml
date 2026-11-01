@@ -34,3 +34,14 @@ jobs:
           jq -r '.candidates[0].content.parts[].text' result.json
       - name: Install Edge TTS
         run: pip install edge-tts
+      - name: Create male voice sample
+        run: |
+          edge-tts --voice en-US-GuyNeural \
+            --text "Believe in yourself. Every small step brings you closer to your dreams. Never give up." \
+            --write-media motivational-voice.mp3
+
+      - name: Save voice sample
+        uses: actions/upload-artifact@v4
+        with:
+          name: motivational-voice
+          path: motivational-voice.mp3
