@@ -130,3 +130,12 @@ jobs:
         with:
           name: finished-youtube-short
           path: motivational-short.mp4
+      - name: Send video to Make
+        env:
+          MAKE_WEBHOOK_URL: ${{ secrets.MAKE_WEBHOOK_URL }}
+        run: |
+          set -e
+          curl --fail-with-body -sS \
+            -X POST \
+            -F "file=@motivational-short.mp4;type=video/mp4" \
+            "$MAKE_WEBHOOK_URL"
